@@ -1,6 +1,6 @@
 name: custom_lint_analyzer_plugin_loader
 description: This pubspec determines the version of the analyzer plugin to load.
-version: 0.7.0
+version: 0.7.0+1
 publish_to: none
 
 environment:
