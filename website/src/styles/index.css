@@ -1,7 +1,31 @@
+@import "tailwindcss";
+
+/* Tailwind v4: replicate the v3 `darkMode: 'class'` strategy.
+   The site toggles `<html class="dark">`, so `dark:` must match the
+   `.dark` class (and its descendants) rather than the default
+   `prefers-color-scheme` media query. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Tailwind v4: theme tokens previously declared in tailwind.config.cjs
+   (theme.extend). Exposed as utilities via the `--color-*`, `--font-*`
+   and `--shadow-*` namespaces. */
+@theme {
+  --font-itc: "ITC Avant Garde Gothic Book", Arial, sans-serif;
+
+  --shadow-footer: 0px -2px 227px rgba(0, 0, 0, 0.14);
+
+  /* `linter` color family -> bg-linter / text-linter / bg-linter-background /
+     bg-linter-card / bg-linter-toggle */
+  --color-linter: var(--primary);
+  --color-linter-background: var(--background);
+  --color-linter-card: #2c1e3c;
+  --color-linter-toggle: #261f3c;
+}
+
 :root {
-  --primary: #2E2174;
+  --primary: #2e2174;
   --light-background: #fff;
-  --dark-background: #0C0D12;
+  --dark-background: #0c0d12;
 
   --astro-code-color-text: #000;
   --astro-code-color-background: transparent;
@@ -36,9 +60,9 @@ html {
 html.dark {
   --background: var(--dark-background);
 
-  --astro-code-color-text: #FFF;
-  --astro-code-token-comment: #FFF;
-  --astro-code-token-keyword: #FFF;
+  --astro-code-color-text: #fff;
+  --astro-code-token-comment: #fff;
+  --astro-code-token-keyword: #fff;
 
   color-scheme: dark;
 }
@@ -61,52 +85,45 @@ body {
   animation: fadeIn 0.2s ease-in-out;
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind v4: `@layer base` / `@layer components` blocks of custom classes
+   become `@utility` definitions so they remain real utilities that support
+   variants (e.g. the `dark:btn-third` used in the markup). */
+@utility underline-gradient {
+  @apply bg-linear-to-r from-[currentColor] to-[currentColor] bg-[length:0_1px] bg-[0_100%] bg-no-repeat transition-[background-size] duration-500;
+}
 
-@layer base {
-  .underline-gradient {
-    @apply bg-gradient-to-r from-[currentColor] to-[currentColor] bg-[length:0_1px] bg-[0_100%] bg-no-repeat transition-[background-size] duration-500;
-  }
+@utility underline-gradient-visible {
+  @apply bg-[length:100%_1px];
+}
 
-  .underline-gradient-visible {
-    @apply bg-[length:100%_1px];
-  }
+@utility underline-gradient-hidden {
+  @apply bg-[length:0_1px];
+}
 
-  .underline-gradient-hidden {
-    @apply bg-[length:0_1px];
+@utility btn-primary {
+  @apply rounded-md bg-white px-6 py-4 text-center
+    text-linter transition-opacity duration-500 ease-in-out
+    hover:opacity-70 disabled:pointer-events-none disabled:cursor-default;
+}
+
+@utility btn-secondary {
+  @apply btn-primary bg-linter text-white;
+}
+
+@utility btn-third {
+  @apply btn-primary bg-transparent bg-[linear-gradient(93.73deg,#2D2072_28.69%,#4B1D62_88.7%)] text-white shadow-lg shadow-indigo-700/30;
+}
+
+/* Chrome, Safari and Opera */
+@utility no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 
-@layer components {
-  .btn-primary {
-    @apply rounded-md bg-white px-6 py-4 text-center  
-              text-linter transition-opacity duration-500 ease-in-out
-              hover:opacity-70 disabled:pointer-events-none disabled:cursor-default;
-  }
-
-  .btn-secondary {
-    @apply btn-primary bg-linter text-white;
-  }
-
-  .btn-third {
-    @apply btn-primary bg-transparent bg-[linear-gradient(93.73deg,#2D2072_28.69%,#4B1D62_88.7%)] text-white shadow-lg shadow-indigo-700/30;
-  }
-}
-
-@layer utilities {
-    /* Chrome, Safari and Opera */
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-
-    .no-scrollbar {
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
-    }
-
-    .overflow-initial {
-        overflow: initial;
-    }
+@utility overflow-initial {
+  overflow: initial;
 }
